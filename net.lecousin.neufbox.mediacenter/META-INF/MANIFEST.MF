@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: NeufBox Media Center
+Bundle-SymbolicName: net.lecousin.neufbox.mediacenter;singleton:=true
+Bundle-Version: 0.1.0
+Bundle-Activator: net.lecousin.neufbox.mediacenter.eclipse.internal.EclipsePlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ net.lecousin.framework;bundle-version="0.1.0",
+ net.lecousin.framework.ui;bundle-version="0.1.0",
+ net.lecousin.framework.net.http;bundle-version="0.1.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: net.lecousin.neufbox.mediacenter,
+ net.lecousin.neufbox.mediacenter.eclipse
+Bundle-Vendor: Guillaume LE COUSIN
+Bundle-ActivationPolicy: lazy
