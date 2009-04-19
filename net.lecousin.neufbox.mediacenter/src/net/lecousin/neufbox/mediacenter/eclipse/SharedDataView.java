@@ -28,9 +28,14 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -58,6 +63,7 @@ public class SharedDataView extends ViewPart {
 	private MediaCenter mc = null;
 	private Composite parent = null;
 	private TreeViewer viewer;
+	private DropManager drop = new DropManager();
 	
 	public MediaCenter getMediaCenter() { return mc; }
 	
@@ -119,6 +125,27 @@ public class SharedDataView extends ViewPart {
 		viewer.setLabelProvider(new LabelProvider());
 		viewer.setInput(mc.getRoot());
 		viewer.getTree().setLayoutData(UIUtil.gridData(1, true, 1, true));
+		viewer.addDropSupport(DND.DROP_LINK, drop.getTransfers(), new DropTargetListener() {
+			public void dragEnter(DropTargetEvent event) {
+				drop.dragEnter(event);
+			}
+			public void dragLeave(DropTargetEvent event) {
+				drop.dragLeave(event);
+			}
+			public void dragOperationChanged(DropTargetEvent event) {
+				drop.dragOperationChanged(event);
+			}
+			public void dragOver(DropTargetEvent event) {
+				drop.dragOver(event);
+			}
+			public void dropAccept(DropTargetEvent event) {
+				drop.dropAccept(event);
+			}
+			public void drop(DropTargetEvent event) {
+				TreeItem item = viewer.getTree().getItem(viewer.getTree().toControl(new Point(event.x, event.y)));
+				drop.drop(event, item, mc);
+			}
+		});
 	}
 
 	@Override
