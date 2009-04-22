@@ -2,6 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension-point id="tree" name="Media Center Tree Extensions" schema="schema/tree.exsd"/>
+   <extension-point id="plugin" name="NeufBox Media Center Plugin" schema="schema/plugin.exsd"/>
    <extension
          point="org.eclipse.ui.views">
       <view

@@ -5,8 +5,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.lecousin.framework.eclipse.extension.EclipsePluginExtensionUtil;
 import net.lecousin.framework.event.Event;
 import net.lecousin.framework.event.Event.Listener;
+import net.lecousin.framework.log.Log;
 import net.lecousin.framework.ui.eclipse.SharedImages;
 import net.lecousin.framework.ui.eclipse.UIUtil;
 import net.lecousin.framework.ui.eclipse.control.LabelButton;
@@ -17,6 +19,7 @@ import net.lecousin.neufbox.mediacenter.Media;
 import net.lecousin.neufbox.mediacenter.MediaCenter;
 import net.lecousin.neufbox.mediacenter.eclipse.internal.EclipsePlugin;
 
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -73,6 +76,7 @@ public class SharedDataView extends ViewPart {
 		super.dispose();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void createPartControl(Composite parent) {
 		this.parent = parent;
@@ -99,6 +103,22 @@ public class SharedDataView extends ViewPart {
 				mediaRead.fire(event);
 			}
 		});
+		for (IConfigurationElement ext : EclipsePluginExtensionUtil.getExtensionsSubNode(EclipsePlugin.ID, "plugin", "listener")) {
+			Listener<SharedDataView> listener;
+			try {
+				listener = (Listener<SharedDataView>)EclipsePluginExtensionUtil.createInstance(Listener.class, ext, "class", new Object[][] { new Object[] { } });
+			} catch (Throwable t) {
+				if (Log.error(this))
+					Log.error(this, "Unable to instantiate NeufBoxMediaCenter listener", t);
+				continue;
+			}
+			try {
+				listener.fire(this);
+			} catch (Throwable t) {
+				if (Log.error(this))
+					Log.error(this, "A NeufBoxMediaCenter listener thrown an exception", t);
+			}
+		}
 	}
 	
 	private void createError(Throwable t) {
